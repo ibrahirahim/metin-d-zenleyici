@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editör Pro - Metin & Kod Paylaşım Platformu</title>
+    <title>Editör Pro - Gelişmiş Metin & Kod Paylaşımı</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CryptoJS (Şifreleme için) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         :root {
             --bg-main: #0b0f19;
@@ -16,10 +18,22 @@
             --accent-glow: rgba(99, 102, 241, 0.25);
             --text-main: #f9fafb;
             --text-muted: #9ca3af;
-            --success: #10b981;
+            --input-bg: #080c14;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .light-mode {
+            --bg-main: #f3f4f6;
+            --panel-bg: #ffffff;
+            --panel-border: #e5e7eb;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --accent-glow: rgba(79, 70, 229, 0.15);
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --input-bg: #f9fafb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
 
         body {
             background-color: var(--bg-main);
@@ -29,7 +43,7 @@
             justify-content: center;
             align-items: center;
             padding: 24px 16px;
-            background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .app-container {
@@ -38,21 +52,18 @@
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* HEADER */
         .app-header {
-            padding: 18px 24px;
+            padding: 16px 24px;
             border-bottom: 1px solid var(--panel-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(8px);
         }
 
         .brand {
@@ -61,47 +72,58 @@
             gap: 12px;
             font-weight: 700;
             font-size: 1.1rem;
-            color: var(--text-main);
         }
 
         .brand-icon {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--accent), #8b5cf6);
             border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+        }
+
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
+        .app-body { padding: 24px; }
+
+        /* GÜVENLİK VE AYAR PANELI */
+        .settings-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: var(--input-bg);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+        }
+
+        .setting-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px var(--accent-glow);
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .badge {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* BODY / EDITOR */
-        .app-body {
-            padding: 24px;
-        }
-
-        .editor-wrapper {
-            position: relative;
-            margin-bottom: 20px;
+        .setting-item label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        
+        .setting-item input, .setting-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            background: var(--panel-bg);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
         }
 
         textarea {
             width: 100%;
-            height: 320px;
-            background: #080c14;
-            color: #e5e7eb;
+            height: 300px;
+            background: var(--input-bg);
+            color: var(--text-main);
             border: 1px solid var(--panel-border);
             border-radius: 14px;
             padding: 18px;
@@ -110,115 +132,86 @@
             line-height: 1.6;
             outline: none;
             resize: vertical;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
+        textarea:focus { border-color: var(--accent); }
 
-        /* ACTION BAR */
         .action-bar {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             justify-content: space-between;
             align-items: center;
+            margin-top: 16px;
         }
 
         .btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 12px 22px;
+            padding: 10px 20px;
             border-radius: 10px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        .btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
+        .btn:hover { background: var(--accent-hover); }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-muted);
             border: 1px solid var(--panel-border);
-            box-shadow: none;
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-        }
+        .btn-secondary:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.1); }
 
-        /* SHARE BOX */
         .share-box {
-            margin-top: 20px;
-            background: #080c14;
+            margin-top: 16px;
+            background: var(--input-bg);
             border: 1px solid var(--panel-border);
             border-radius: 12px;
-            padding: 16px;
+            padding: 14px;
             display: none;
-            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .share-input-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
+        .share-input-group { display: flex; gap: 10px; margin-top: 8px; }
 
         .share-input-group input {
             flex: 1;
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 10px;
             color: var(--accent);
             font-family: 'Fira Code', monospace;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             outline: none;
         }
 
-        /* VIEW MODE (AYRI SAYFA MODU) */
-        #viewSection { display: none; }
+        /* VIEW MODE & ŞİFRE MODAL */
+        #viewSection, #passwordPromptSection { display: none; }
 
         .view-card {
-            background: #080c14;
+            background: var(--input-bg);
             border: 1px solid var(--panel-border);
             border-radius: 14px;
             padding: 24px;
-            min-height: 250px;
+            min-height: 220px;
             font-family: 'Fira Code', monospace;
             font-size: 0.95rem;
             line-height: 1.7;
             white-space: pre-wrap;
             word-break: break-word;
-            color: #e5e7eb;
         }
 
-        /* STATUS BAR FOOTER */
         .status-bar {
             padding: 10px 24px;
-            background: rgba(8, 12, 20, 0.6);
+            background: var(--input-bg);
             border-top: 1px solid var(--panel-border);
             display: flex;
             justify-content: space-between;
@@ -226,16 +219,7 @@
             color: var(--text-muted);
         }
 
-        .stats-group {
-            display: flex;
-            gap: 16px;
-        }
-
-        @media (max-width: 640px) {
-            .action-bar { flex-direction: column; width: 100%; }
-            .btn { width: 100%; justify-content: center; }
-            .share-input-group { flex-direction: column; }
-        }
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
@@ -245,22 +229,46 @@
     <!-- HEADER -->
     <div class="app-header">
         <div class="brand">
-            <div class="brand-icon">
-                <i class="fa-solid fa-code"></i>
-            </div>
+            <div class="brand-icon"><i class="fa-solid fa-code"></i></div>
             <span>Editör Pro</span>
         </div>
-        <span class="badge"><i class="fa-solid fa-globe"></i> Canlı Yayın</span>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="toggleTheme()">
+                <i class="fa-solid fa-circle-half-stroke"></i> Tema
+            </button>
+        </div>
     </div>
 
-    <!-- MAIN BODY -->
+    <!-- BODY -->
     <div class="app-body">
         
-        <!-- 1. DÜZENLEME MODU -->
+        <!-- 1. YAZMA VE DÜZENLEME MODU -->
         <div id="editorSection">
-            <div class="editor-wrapper">
-                <textarea id="editor" placeholder="Metninizi veya kod parçacığınızı buraya yazın..." oninput="updateStats()"></textarea>
+            
+            <div class="settings-panel">
+                <div class="setting-item">
+                    <label><i class="fa-solid fa-lock"></i> Parola:</label>
+                    <input type="password" id="linkPassword" placeholder="İsteğe bağlı şifre">
+                </div>
+                <div class="setting-item">
+                    <label><i class="fa-solid fa-hourglass-half"></i> Süre:</label>
+                    <select id="linkExpiry">
+                        <option value="0">Süresiz</option>
+                        <option value="10m">10 Dakika</option>
+                        <option value="1h">1 Saat</option>
+                        <option value="24h">24 Saat</option>
+                        <option value="7d">7 Gün</option>
+                    </select>
+                </div>
+                <div class="setting-item" style="max-width: 140px;">
+                    <label for="fileInput" class="btn btn-secondary" style="width:100%; justify-content:center; cursor:pointer;">
+                        <i class="fa-solid fa-file-import"></i> Dosya Seç
+                    </label>
+                    <input type="file" id="fileInput" onchange="loadFile(event)">
+                </div>
             </div>
+
+            <textarea id="editor" placeholder="Metninizi yazın veya yukarıdan dosya yükleyin..." oninput="updateStats()"></textarea>
             
             <div class="action-bar">
                 <button class="btn" onclick="generateShareLink()">
@@ -275,36 +283,44 @@
                 <p style="font-size: 0.85rem; color: var(--text-muted);">Paylaşıma Hazır Bağlantınız:</p>
                 <div class="share-input-group">
                     <input type="text" id="shareUrl" readonly>
-                    <button class="btn" onclick="copyLink()">
-                        <i class="fa-solid fa-copy"></i> Kopyala
-                    </button>
+                    <button class="btn" onclick="copyLink()"><i class="fa-solid fa-copy"></i> Kopyala</button>
                 </div>
             </div>
         </div>
 
-        <!-- 2. SADECE OKUMA (AYRI SAYFA) MODU -->
+        <!-- 2. ŞİFRE GİRİŞ MODAL (KORUMALI LİNKLER İÇİN) -->
+        <div id="passwordPromptSection">
+            <div style="text-align: center; padding: 30px 10px;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--accent); margin-bottom: 16px;"></i>
+                <h3 style="margin-bottom: 8px;">Bu İçerik Parola İle Korunuyor</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">İçeriği görüntülemek için lütfen parolayı girin.</p>
+                <div style="max-width: 320px; margin: 0 auto; display: flex; gap: 8px;">
+                    <input type="password" id="inputDecryptPassword" placeholder="Parola" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--panel-border); background:var(--input-bg); color:var(--text-main); outline:none;">
+                    <button class="btn" onclick="unlockContent()">Aç</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. OKUMA MODU (AYRI SAYFA) -->
         <div id="viewSection">
-            <div style="margin-bottom: 14px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-file-contract"></i> Paylaşılan İçerik Görünümü
+            <div style="margin-bottom: 14px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-file-contract"></i> Paylaşılan İçerik</span>
+                <span id="expiryBadge" style="font-size:0.8rem; color:var(--accent);"></span>
             </div>
             
             <div class="view-card" id="textContent"></div>
             
             <div class="action-bar" style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="copyContent()">
-                    <i class="fa-solid fa-copy"></i> İçeriği Kopyala
-                </button>
-                <a href="index.html" class="btn" style="text-decoration: none;">
-                    <i class="fa-solid fa-plus"></i> Yeni Metin Oluştur
-                </a>
+                <button class="btn btn-secondary" onclick="copyContent()"><i class="fa-solid fa-copy"></i> İçeriği Kopyala</button>
+                <a href="index.html" class="btn" style="text-decoration: none;"><i class="fa-solid fa-plus"></i> Yeni Metin Oluştur</a>
             </div>
         </div>
 
     </div>
 
-    <!-- FOOTER STATUS BAR -->
+    <!-- FOOTER -->
     <div class="status-bar">
-        <div class="stats-group">
+        <div style="display:flex; gap:16px;">
             <span id="charCount">Karakter: 0</span>
             <span id="wordCount">Kelime: 0</span>
             <span id="lineCount">Satır: 0</span>
@@ -316,8 +332,8 @@
 
 <script>
     const editor = document.getElementById('editor');
+    let encryptedDataPayload = null;
 
-    // İstatistikleri Güncelle
     function updateStats() {
         const text = editor.value;
         document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
@@ -327,45 +343,123 @@
         document.getElementById('lineCount').textContent = `Satır: ${lines}`;
     }
 
-    // Yükleme Kontrolü
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+    }
+
+    function loadFile(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                editor.value = evt.target.result;
+                updateStats();
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function getExpiryTimestamp(type) {
+        const now = Date.now();
+        switch(type) {
+            case '10m': return now + 600000;
+            case '1h': return now + 3600000;
+            case '24h': return now + 86400000;
+            case '7d': return now + 604800000;
+            default: return 0;
+        }
+    }
+
+    // LINK OLUŞTURMA
+    function generateShareLink() {
+        const text = editor.value;
+        if (!text.trim()) return alert('Lütfen bir metin yazın veya dosya yükleyin!');
+
+        const password = document.getElementById('linkPassword').value;
+        const expiryType = document.getElementById('linkExpiry').value;
+        const expiryTime = getExpiryTimestamp(expiryType);
+
+        let finalContent = text;
+        let isEncrypted = false;
+
+        if (password) {
+            finalContent = CryptoJS.AES.encrypt(text, password).toString();
+            isEncrypted = true;
+        }
+
+        const payload = {
+            c: finalContent,
+            e: isEncrypted ? 1 : 0,
+            x: expiryTime
+        };
+
+        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+        const fullUrl = window.location.origin + window.location.pathname + '#' + encodedData;
+
+        document.getElementById('shareUrl').value = fullUrl;
+        document.getElementById('shareBox').style.display = 'block';
+
+        navigator.clipboard.writeText(fullUrl).then(() => {
+            alert('Özel bağlantınız kopyalandı!');
+        }).catch(() => {});
+    }
+
+    // SAYFA AÇILIŞ KONTROLÜ
     window.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash.substring(1);
         if (hash) {
             try {
-                const decodedText = decodeURIComponent(escape(atob(hash)));
+                const jsonString = decodeURIComponent(escape(atob(hash)));
+                const payload = JSON.parse(jsonString);
+
+                // 1. Süre Kontrolü
+                if (payload.x > 0 && Date.now() > payload.x) {
+                    alert('⏰ Bu bağlantının süresi dolmuş!');
+                    window.location.href = window.location.pathname;
+                    return;
+                }
+
                 document.getElementById('editorSection').style.display = 'none';
-                document.getElementById('viewSection').style.display = 'block';
-                document.getElementById('textContent').textContent = decodedText;
-                
-                // Okuma modunda istatistikleri ayarla
-                document.getElementById('charCount').textContent = `Karakter: ${decodedText.length}`;
-                const words = decodedText.trim() ? decodedText.trim().split(/\s+/).length : 0;
-                document.getElementById('wordCount').textContent = `Kelime: ${words}`;
-                const lines = decodedText ? decodedText.split('\n').length : 0;
-                document.getElementById('lineCount').textContent = `Satır: ${lines}`;
+
+                // 2. Şifre Kontrolü
+                if (payload.e === 1) {
+                    encryptedDataPayload = payload.c;
+                    document.getElementById('passwordPromptSection').style.display = 'block';
+                } else {
+                    showContent(payload.c);
+                }
+
             } catch (e) {
-                alert('Geçersiz veya bozuk link!');
+                alert('Geçersiz veya bozuk bağlantı!');
             }
         }
     });
 
-    // Link Üret
-    function generateShareLink() {
-        const text = editor.value;
-        if (!text.trim()) {
-            alert('Lütfen önce bir metin girin!');
-            return;
+    function unlockContent() {
+        const pass = document.getElementById('inputDecryptPassword').value;
+        if (!pass) return alert('Lütfen parolayı girin.');
+
+        try {
+            const bytes = CryptoJS.AES.decrypt(encryptedDataPayload, pass);
+            const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+
+            if (!decryptedText) return alert('Hatalı parola!');
+
+            document.getElementById('passwordPromptSection').style.display = 'none';
+            showContent(decryptedText);
+        } catch (e) {
+            alert('Hatalı parola!');
         }
+    }
 
-        const encodedText = btoa(unescape(encodeURIComponent(text)));
-        const fullUrl = window.location.origin + window.location.pathname + '#' + encodedText;
-
-        document.getElementById('shareUrl').value = fullUrl;
-        document.getElementById('shareBox').style.display = 'block';
-        
-        navigator.clipboard.writeText(fullUrl).then(() => {
-            alert('Özel bağlantınız oluşturuldu ve kopyalandı!');
-        }).catch(() => {});
+    function showContent(text) {
+        document.getElementById('viewSection').style.display = 'block';
+        document.getElementById('textContent').textContent = text;
+        document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        document.getElementById('wordCount').textContent = `Kelime: ${words}`;
+        const lines = text ? text.split('\n').length : 0;
+        document.getElementById('lineCount').textContent = `Satır: ${lines}`;
     }
 
     function copyLink() {
@@ -376,8 +470,7 @@
     }
 
     function copyContent() {
-        const text = document.getElementById('textContent').textContent;
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(document.getElementById('textContent').textContent);
         alert('İçerik kopyalandı!');
     }
 
