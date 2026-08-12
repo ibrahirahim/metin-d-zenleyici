@@ -3,207 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editör Pro Cloud - TV GO</title>
+    <title>Metinlerim - Editör Pro Cloud</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-main: #0b0f19;
-            --panel-bg: #111827;
-            --panel-border: #1f2937;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --input-bg: #080c14;
-            --danger: #ef4444;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px 16px;
-        }
-
-        .app-container {
-            max-width: 900px;
-            width: 100%;
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-
-        .app-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--panel-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.1rem; }
-        .brand-icon {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: white;
-        }
-
-        .app-body { padding: 24px; }
-
-        .auth-card {
-            max-width: 400px;
-            margin: 40px auto;
-            background: var(--input-bg);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--panel-border);
-        }
-
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
-        .form-group input {
-            width: 100%; padding: 10px 14px;
-            background: var(--panel-bg); border: 1px solid var(--panel-border);
-            border-radius: 8px; color: var(--text-main); outline: none;
-        }
-        .form-group input:focus { border-color: var(--accent); }
-
-        .btn {
-            background: var(--accent); color: white; border: none;
-            padding: 10px 20px; border-radius: 10px; font-weight: 600;
-            font-size: 0.88rem; cursor: pointer; display: inline-flex;
-            align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; width: 100%;
-        }
-
-        .btn:hover { background: var(--accent-hover); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--panel-border); width: auto; }
-        .btn-danger { background: var(--danger); width: auto; }
-
-        .auth-switch { text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
-        .auth-switch a { color: var(--accent); text-decoration: none; cursor: pointer; font-weight: 600; }
-
-        textarea {
-            width: 100%; height: 200px;
-            background: var(--input-bg); color: var(--text-main);
-            border: 1px solid var(--panel-border); border-radius: 14px;
-            padding: 18px; font-family: 'Fira Code', monospace;
-            font-size: 0.95rem; line-height: 1.6; outline: none; resize: vertical;
-        }
-
-        .document-list { margin-top: 24px; }
-        .doc-item {
-            background: var(--input-bg); border: 1px solid var(--panel-border);
-            border-radius: 12px; padding: 16px; margin-bottom: 12px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .doc-info { flex: 1; margin-right: 16px; }
-        .doc-title { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
-        .doc-preview { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }
-        .doc-actions { display: flex; gap: 8px; }
-
-        #dashboardSection, #authSection { display: none; }
+        :root { --bg: #0b0f19; --panel: #111827; --border: #1f2937; --accent: #6366f1; --danger: #ef4444; --text: #f9fafb; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        
+        /* Editör & Liste Kontrolü */
+        #editorView { display: none; }
+        
+        .doc-item { display: flex; justify-content: space-between; align-items: center; background: #080c14; padding: 16px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .btn { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sec { background: var(--border); color: white; }
+        
+        input, textarea { width: 100%; padding: 12px; background: #080c14; border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 10px; outline: none; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="app-header">
-        <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-code"></i></div>
-            <span>Editör Pro Cloud</span>
-        </div>
-        <div id="userHeaderActions" style="display:none; align-items:center; gap:12px;">
-            <span id="userEmailDisplay" style="font-size: 0.85rem; color: var(--text-muted);"></span>
-            <button class="btn btn-secondary" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</button>
+<div class="container">
+    <div id="authSection">
+        <div class="card" id="loginForm">
+            <h2>Giriş Yap</h2>
+            <input type="email" id="loginEmail" placeholder="E-posta">
+            <input type="password" id="loginPassword" placeholder="Şifre">
+            <button class="btn btn-primary" onclick="login()">Giriş Yap</button>
         </div>
     </div>
 
-    <div class="app-body">
-        
-        <!-- GİRİŞ VE KAYIT PANELİ -->
-        <div id="authSection">
-            <div class="auth-card" id="loginForm">
-                <h2 style="margin-bottom: 20px; text-align: center;">Giriş Yap</h2>
-                <div class="form-group">
-                    <label>E-posta</label>
-                    <input type="email" id="loginEmail" placeholder="eposta@ornek.com">
-                </div>
-                <div class="form-group">
-                    <label>Parola</label>
-                    <input type="password" id="loginPassword" placeholder="******">
-                </div>
-                <button class="btn" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</button>
-                <div class="auth-switch">
-                    Hesabın yok mu? <a onclick="toggleAuthForms('register')">Kayıt Ol</a>
-                </div>
-            </div>
-
-            <div class="auth-card" id="registerForm" style="display: none;">
-                <h2 style="margin-bottom: 20px; text-align: center;">Hesap Oluştur</h2>
-                <div class="form-group">
-                    <label>E-posta</label>
-                    <input type="email" id="regEmail" placeholder="eposta@ornek.com">
-                </div>
-                <div class="form-group">
-                    <label>Parola</label>
-                    <input type="password" id="regPassword" placeholder="******">
-                </div>
-                <button class="btn" onclick="register()"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</button>
-                <div class="auth-switch">
-                    Zaten hesabın var mı? <a onclick="toggleAuthForms('login')">Giriş Yap</a>
-                </div>
-            </div>
+    <div id="appSection" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>Metinlerim</h1>
+            <button class="btn btn-primary" onclick="showEditor()"><i class="fa-solid fa-plus"></i> Yeni Metin</button>
         </div>
 
-        <!-- METİN DÜZENLEME VE LİSTELEME PANELİ -->
-        <div id="dashboardSection">
-            <h3 id="editorTitle" style="margin-bottom: 12px;">Yeni Metin Oluştur</h3>
+        <!-- Klasör Görünümü -->
+        <div id="documentsView">
+            <div id="documentsContainer"></div>
+        </div>
+
+        <!-- Editör Görünümü -->
+        <div id="editorView" class="card">
+            <h2 id="editorTitle">Yeni Metin</h2>
             <input type="hidden" id="currentDocId">
-            
-            <div class="form-group">
-                <input type="text" id="docTitleInput" placeholder="Metin Başlığı (Örn: Proje Kodları)" style="font-weight:600;">
-            </div>
-            
-            <textarea id="docContentInput" placeholder="İçeriğinizi buraya yazın..."></textarea>
-
-            <div style="margin-top: 12px; display: flex; gap: 10px;">
-                <button class="btn" id="saveBtn" onclick="saveDocument()"><i class="fa-solid fa-floppy-disk"></i> Buluta Kaydet</button>
-                <button class="btn btn-secondary" id="cancelEditBtn" onclick="resetEditor()" style="display:none;">İptal</button>
-            </div>
-
-            <hr style="border-color: var(--panel-border); margin: 30px 0;">
-
-            <h3>Kaydedilen Metinleriniz</h3>
-            <div class="document-list" id="documentsContainer">
-                <p style="color: var(--text-muted); text-align:center; padding:20px;">Henüz kaydedilmiş bir metin yok.</p>
+            <input type="text" id="docTitle" placeholder="Başlık...">
+            <textarea id="docContent" rows="10" placeholder="İçerik..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-primary" onclick="saveDocument()">Kaydet</button>
+                <button class="btn btn-sec" onclick="hideEditor()">İptal</button>
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- FIREBASE SDK (MODULAR) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-        getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { 
-        getDatabase, ref, push, set, onValue, remove, update 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // PAYLAŞTIĞIN FIREBASE YAPILANDIRMASI
     const firebaseConfig = {
         apiKey: "AIzaSyAfOIZT3dkDbWaVqOuwaLWT8JrsVqhWiKw",
         authDomain: "tv-go-test-c8ae3.firebaseapp.com",
@@ -217,147 +79,71 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
+    let uid = null;
 
-    let currentUser = null;
-
-    // OTURUM DURUMU TAKİBİ
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            currentUser = user;
+            uid = user.uid;
             document.getElementById('authSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
-            document.getElementById('userHeaderActions').style.display = 'flex';
-            document.getElementById('userEmailDisplay').textContent = user.email;
-            loadUserDocuments();
-        } else {
-            currentUser = null;
-            document.getElementById('authSection').style.display = 'block';
-            document.getElementById('dashboardSection').style.display = 'none';
-            document.getElementById('userHeaderActions').style.display = 'none';
+            document.getElementById('appSection').style.display = 'block';
+            loadDocs();
         }
     });
 
-    // KAYIT OL
-    window.register = async () => {
-        const email = document.getElementById('regEmail').value;
-        const pass = document.getElementById('regPassword').value;
-        try {
-            await createUserWithEmailAndPassword(auth, email, pass);
-            alert('Hesap başarıyla oluşturuldu!');
-        } catch (e) { alert('Hata: ' + e.message); }
+    window.login = () => {
+        const e = document.getElementById('loginEmail').value;
+        const p = document.getElementById('loginPassword').value;
+        signInWithEmailAndPassword(auth, e, p).catch(err => alert(err.message));
     };
 
-    // GİRİŞ YAP
-    window.login = async () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-        } catch (e) { alert('Hatalı giriş: ' + e.message); }
+    window.showEditor = (id, title, content) => {
+        document.getElementById('currentDocId').value = id || '';
+        document.getElementById('docTitle').value = title || '';
+        document.getElementById('docContent').value = content || '';
+        document.getElementById('editorTitle').innerText = id ? 'Düzenle' : 'Yeni Metin';
+        document.getElementById('documentsView').style.display = 'none';
+        document.getElementById('editorView').style.display = 'block';
     };
 
-    // ÇIKIŞ YAP
-    window.logout = () => signOut(auth);
-
-    // FORM DEĞİŞTİR
-    window.toggleAuthForms = (mode) => {
-        document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
-        document.getElementById('registerForm').style.display = mode === 'register' ? 'block' : 'none';
+    window.hideEditor = () => {
+        document.getElementById('documentsView').style.display = 'block';
+        document.getElementById('editorView').style.display = 'none';
     };
 
-    // METİN KAYDET VE GÜNCELLE (REALTIME DATABASE)
     window.saveDocument = async () => {
-        const title = document.getElementById('docTitleInput').value.trim();
-        const content = document.getElementById('docContentInput').value.trim();
-        const docId = document.getElementById('currentDocId').value;
-
-        if (!title || !content) return alert('Lütfen başlık ve içerik girin!');
-
-        try {
-            if (docId) {
-                // Güncelleme
-                const docRef = ref(db, `users/${currentUser.uid}/documents/${docId}`);
-                await update(docRef, { title, content });
-                alert('Metin güncellendi!');
-            } else {
-                // Yeni Ekleme
-                const userDocsRef = ref(db, `users/${currentUser.uid}/documents`);
-                const newDocRef = push(userDocsRef);
-                await set(newDocRef, {
-                    title: title,
-                    content: content,
-                    createdAt: Date.now()
-                });
-                alert('Metin kaydedildi!');
-            }
-            resetEditor();
-        } catch (e) { alert('Kaydedilemedi: ' + e.message); }
+        const id = document.getElementById('currentDocId').value;
+        const title = document.getElementById('docTitle').value;
+        const content = document.getElementById('docContent').value;
+        
+        if (id) {
+            await update(ref(db, `users/${uid}/docs/${id}`), { title, content });
+        } else {
+            await push(ref(db, `users/${uid}/docs`), { title, content });
+        }
+        hideEditor();
     };
 
-    // KULLANICI METİNLERİNİ CANLI LİSTELE
-    function loadUserDocuments() {
-        const userDocsRef = ref(db, `users/${currentUser.uid}/documents`);
-        onValue(userDocsRef, (snapshot) => {
+    window.deleteDoc = (id) => {
+        if(confirm('Silinsin mi?')) remove(ref(db, `users/${uid}/docs/${id}`));
+    };
+
+    function loadDocs() {
+        onValue(ref(db, `users/${uid}/docs`), (snap) => {
             const container = document.getElementById('documentsContainer');
             container.innerHTML = '';
-
-            if (!snapshot.exists()) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding:20px;">Henüz kaydedilmiş bir metnin yok.</p>';
-                return;
-            }
-
-            snapshot.forEach((childSnapshot) => {
-                const id = childSnapshot.key;
-                const data = childSnapshot.val();
-
-                const div = document.createElement('div');
-                div.className = 'doc-item';
-                div.innerHTML = `
-                    <div class="doc-info">
-                        <div class="doc-title">${escapeHtml(data.title)}</div>
-                        <div class="doc-preview">${escapeHtml(data.content)}</div>
-                    </div>
-                    <div class="doc-actions">
-                        <button class="btn btn-secondary" onclick="editDoc('${id}', '${escapeQuotes(data.title)}', '${escapeQuotes(data.content)}')"><i class="fa-solid fa-pen"></i> Düzenle</button>
-                        <button class="btn btn-danger" onclick="deleteDocItem('${id}')"><i class="fa-solid fa-trash"></i> Sil</button>
-                    </div>
-                `;
-                container.appendChild(div);
+            snap.forEach(child => {
+                const d = child.val();
+                container.innerHTML += `
+                    <div class="doc-item">
+                        <div><strong>${d.title}</strong></div>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn btn-sec" onclick="showEditor('${child.key}', '${d.title.replace(/'/g, "\\'")}', '${d.content.replace(/'/g, "\\'")}')">Düzenle</button>
+                            <button class="btn btn-danger" onclick="deleteDoc('${child.key}')">Sil</button>
+                        </div>
+                    </div>`;
             });
         });
     }
-
-    // DÜZENLEME MODU
-    window.editDoc = (id, title, content) => {
-        document.getElementById('currentDocId').value = id;
-        document.getElementById('docTitleInput').value = title;
-        document.getElementById('docContentInput').value = content;
-        document.getElementById('editorTitle').textContent = 'Metni Düzenle';
-        document.getElementById('saveBtn').innerHTML = '<i class="fa-solid fa-rotate"></i> Değişiklikleri Kaydet';
-        document.getElementById('cancelEditBtn').style.display = 'inline-flex';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    // SİLME
-    window.deleteDocItem = async (id) => {
-        if (confirm('Bu metni silmek istediğinize emin misiniz?')) {
-            const docRef = ref(db, `users/${currentUser.uid}/documents/${id}`);
-            await remove(docRef);
-        }
-    };
-
-    // SIFIRLAMA
-    window.resetEditor = () => {
-        document.getElementById('currentDocId').value = '';
-        document.getElementById('docTitleInput').value = '';
-        document.getElementById('docContentInput').value = '';
-        document.getElementById('editorTitle').textContent = 'Yeni Metin Oluştur';
-        document.getElementById('saveBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Buluta Kaydet';
-        document.getElementById('cancelEditBtn').style.display = 'none';
-    };
-
-    function escapeHtml(str) { return str.replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-    function escapeQuotes(str) { return str.replace(/'/g, "\\'").replace(/\n/g, "\\n"); }
 </script>
 
 </body>
