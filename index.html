@@ -3,141 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metin Paylaşım & Okuma Sistemi</title>
+    <title>Editör Pro - Metin & Kod Paylaşım Platformu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: #0f172a; color: #f8fafc; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
-        .container { max-width: 850px; width: 100%; background: #1e293b; padding: 24px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: fit-content; }
-        
-        /* EDITÖR MODU BÖLÜMÜ */
-        .header-title { color: #38bdf8; font-size: 22px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-        textarea { width: 100%; height: 280px; background: #0f172a; color: #fff; border: 1px solid #334155; padding: 16px; border-radius: 12px; font-size: 16px; line-height: 1.6; margin-bottom: 16px; outline: none; resize: vertical; font-family: monospace; }
-        textarea:focus { border-color: #38bdf8; }
-        
-        .action-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-        .btn { background: #0284c7; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn:hover { background: #0369a1; }
-        .btn-success { background: #10b981; }
-        .btn-success:hover { background: #059669; }
-        .btn-outline { background: transparent; border: 1px solid #334155; }
-        .btn-outline:hover { background: #334155; }
+        :root {
+            --bg-main: #0b0f19;
+            --panel-bg: #111827;
+            --panel-border: #1f2937;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+        }
 
-        .share-box { margin-top: 18px; background: #0f172a; padding: 14px; border-radius: 10px; border: 1px solid #334155; display: none; }
-        .share-box input { width: calc(100% - 110px); padding: 10px; border-radius: 6px; border: 1px solid #334155; background: #1e293b; color: #38bdf8; font-weight: 500; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
-        /* SADECE OKUMA (AYRI SAYFA) MODU */
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+            background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
+        }
+
+        .app-container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .app-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* BODY / EDITOR */
+        .app-body {
+            padding: 24px;
+        }
+
+        .editor-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 320px;
+            background: #080c14;
+            color: #e5e7eb;
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 18px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            outline: none;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        /* ACTION BAR */
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--panel-border);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        /* SHARE BOX */
+        .share-box {
+            margin-top: 20px;
+            background: #080c14;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .share-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .share-input-group input {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--accent);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        /* VIEW MODE (AYRI SAYFA MODU) */
         #viewSection { display: none; }
-        .view-card { background: #0f172a; padding: 24px; border-radius: 12px; border: 1px solid #334155; min-height: 200px; font-size: 17px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; color: #e2e8f0; }
-        .view-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        .view-card {
+            background: #080c14;
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 24px;
+            min-height: 250px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #e5e7eb;
+        }
+
+        /* STATUS BAR FOOTER */
+        .status-bar {
+            padding: 10px 24px;
+            background: rgba(8, 12, 20, 0.6);
+            border-top: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .action-bar { flex-direction: column; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+            .share-input-group { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
     
-    <!-- 1. YAZMA / EDITÖR MODU -->
-    <div id="editorSection">
-        <div class="header-title">
-            <i class="fa-solid fa-pen-to-square"></i> Metin Düzenleyici
-        </div>
-        
-        <textarea id="editor" placeholder="Metninizi buraya yazın veya yapıştırın..."></textarea>
-        
-        <div class="action-bar">
-            <button class="btn btn-success" onclick="generateShareLink()">
-                <i class="fa-solid fa-bolt"></i> Özel Link Oluştur & Kopyala
-            </button>
-            <button class="btn btn-outline" onclick="document.getElementById('editor').value=''">
-                <i class="fa-solid fa-trash"></i> Temizle
-            </button>
-        </div>
-
-        <div class="share-box" id="shareBox">
-            <p style="margin-bottom:8px; font-size:13px; color:#94a3b8;">Paylaşılmaya Hazır Özel Linkiniz:</p>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="shareUrl" readonly>
-                <button class="btn" onclick="copyLink()">
-                    <i class="fa-solid fa-copy"></i> Kopyala
-                </button>
+    <!-- HEADER -->
+    <div class="app-header">
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-code"></i>
             </div>
+            <span>Editör Pro</span>
         </div>
+        <span class="badge"><i class="fa-solid fa-globe"></i> Canlı Yayın</span>
     </div>
 
-    <!-- 2. LİNKE TIKLAYANIN GÖRECEĞİ AYRI SAYFA MODU -->
-    <div id="viewSection">
-        <div class="header-title">
-            <i class="fa-solid fa-file-lines"></i> Paylaşılan İçerik
-        </div>
+    <!-- MAIN BODY -->
+    <div class="app-body">
         
-        <div class="view-card" id="textContent"></div>
-        
-        <div class="view-footer">
-            <button class="btn btn-outline" onclick="copyContent()">
-                <i class="fa-solid fa-copy"></i> Metni Kopyala
-            </button>
-            <a href="index.html" class="btn" style="text-decoration:none;">
-                <i class="fa-solid fa-plus"></i> Kendi Metnini Oluştur
-            </a>
+        <!-- 1. DÜZENLEME MODU -->
+        <div id="editorSection">
+            <div class="editor-wrapper">
+                <textarea id="editor" placeholder="Metninizi veya kod parçacığınızı buraya yazın..." oninput="updateStats()"></textarea>
+            </div>
+            
+            <div class="action-bar">
+                <button class="btn" onclick="generateShareLink()">
+                    <i class="fa-solid fa-bolt"></i> Özel Bağlantı Oluştur & Kopyala
+                </button>
+                <button class="btn btn-secondary" onclick="clearEditor()">
+                    <i class="fa-solid fa-trash-can"></i> Temizle
+                </button>
+            </div>
+
+            <div class="share-box" id="shareBox">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Paylaşıma Hazır Bağlantınız:</p>
+                <div class="share-input-group">
+                    <input type="text" id="shareUrl" readonly>
+                    <button class="btn" onclick="copyLink()">
+                        <i class="fa-solid fa-copy"></i> Kopyala
+                    </button>
+                </div>
+            </div>
         </div>
+
+        <!-- 2. SADECE OKUMA (AYRI SAYFA) MODU -->
+        <div id="viewSection">
+            <div style="margin-bottom: 14px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-file-contract"></i> Paylaşılan İçerik Görünümü
+            </div>
+            
+            <div class="view-card" id="textContent"></div>
+            
+            <div class="action-bar" style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="copyContent()">
+                    <i class="fa-solid fa-copy"></i> İçeriği Kopyala
+                </button>
+                <a href="index.html" class="btn" style="text-decoration: none;">
+                    <i class="fa-solid fa-plus"></i> Yeni Metin Oluştur
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER STATUS BAR -->
+    <div class="status-bar">
+        <div class="stats-group">
+            <span id="charCount">Karakter: 0</span>
+            <span id="wordCount">Kelime: 0</span>
+            <span id="lineCount">Satır: 0</span>
+        </div>
+        <div>UTF-8</div>
     </div>
 
 </div>
 
 <script>
-    // Sayfa Yüklendiğinde Kontrol Et
+    const editor = document.getElementById('editor');
+
+    // İstatistikleri Güncelle
+    function updateStats() {
+        const text = editor.value;
+        document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        document.getElementById('wordCount').textContent = `Kelime: ${words}`;
+        const lines = text ? text.split('\n').length : 0;
+        document.getElementById('lineCount').textContent = `Satır: ${lines}`;
+    }
+
+    // Yükleme Kontrolü
     window.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash.substring(1);
-        
-        // Eğer linkin sonunda metin verisi (#...) varsa AYRI OKUMA SAYFASINI AÇ
         if (hash) {
             try {
                 const decodedText = decodeURIComponent(escape(atob(hash)));
-                
-                // Editör alanını gizle, Sadece Okuma sayfasını göster
                 document.getElementById('editorSection').style.display = 'none';
                 document.getElementById('viewSection').style.display = 'block';
                 document.getElementById('textContent').textContent = decodedText;
+                
+                // Okuma modunda istatistikleri ayarla
+                document.getElementById('charCount').textContent = `Karakter: ${decodedText.length}`;
+                const words = decodedText.trim() ? decodedText.trim().split(/\s+/).length : 0;
+                document.getElementById('wordCount').textContent = `Kelime: ${words}`;
+                const lines = decodedText ? decodedText.split('\n').length : 0;
+                document.getElementById('lineCount').textContent = `Satır: ${lines}`;
             } catch (e) {
-                alert('Geçersiz veya bozuk paylaşım linki!');
+                alert('Geçersiz veya bozuk link!');
             }
         }
     });
 
-    // Metne Özel Link Üretme Fonksiyonu
+    // Link Üret
     function generateShareLink() {
-        const text = document.getElementById('editor').value;
+        const text = editor.value;
         if (!text.trim()) {
-            alert('Lütfen önce bir metin yazın!');
+            alert('Lütfen önce bir metin girin!');
             return;
         }
 
-        // Metni URL için güvenli şekilde kodla (Base64)
         const encodedText = btoa(unescape(encodeURIComponent(text)));
         const fullUrl = window.location.origin + window.location.pathname + '#' + encodedText;
 
-        // Input'a yaz ve Panoya Kopyala
         document.getElementById('shareUrl').value = fullUrl;
         document.getElementById('shareBox').style.display = 'block';
         
         navigator.clipboard.writeText(fullUrl).then(() => {
-            alert('Özel linkiniz oluşturuldu ve panoya kopyalandı!\n\nArtık bu linki herkese gönderebilirsiniz.');
-        }).catch(() => {
-            alert('Link oluşturuldu! Aşağıdaki kutudan kopyalayabilirsiniz.');
-        });
+            alert('Özel bağlantınız oluşturuldu ve kopyalandı!');
+        }).catch(() => {});
     }
 
     function copyLink() {
         const copyText = document.getElementById('shareUrl');
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
-        alert('Link kopyalandı!');
+        alert('Bağlantı kopyalandı!');
     }
 
     function copyContent() {
         const text = document.getElementById('textContent').textContent;
         navigator.clipboard.writeText(text);
-        alert('Metin panoya kopyalandı!');
+        alert('İçerik kopyalandı!');
+    }
+
+    function clearEditor() {
+        if(confirm('Tüm metni silmek istediğinize emin misiniz?')) {
+            editor.value = '';
+            updateStats();
+            document.getElementById('shareBox').style.display = 'none';
+        }
     }
 </script>
 
