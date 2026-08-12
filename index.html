@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editör Pro - Gelişmiş Metin & Kod Paylaşımı</title>
+    <title>Editör Pro Cloud - TV GO</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
     <style>
         :root {
             --bg-main: #0b0f19;
@@ -14,23 +14,10 @@
             --panel-border: #1f2937;
             --accent: #6366f1;
             --accent-hover: #4f46e5;
-            --accent-glow: rgba(99, 102, 241, 0.25);
             --text-main: #f9fafb;
             --text-muted: #9ca3af;
             --input-bg: #080c14;
             --danger: #ef4444;
-        }
-
-        .light-mode {
-            --bg-main: #f3f4f6;
-            --panel-bg: #ffffff;
-            --panel-border: #e5e7eb;
-            --accent: #4f46e5;
-            --accent-hover: #4338ca;
-            --accent-glow: rgba(79, 70, 229, 0.15);
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --input-bg: #f9fafb;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
@@ -43,7 +30,6 @@
             justify-content: center;
             align-items: center;
             padding: 24px 16px;
-            transition: background-color 0.3s, color 0.3s;
         }
 
         .app-container {
@@ -54,8 +40,6 @@
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .app-header {
@@ -75,103 +59,60 @@
             color: white;
         }
 
-        .header-actions { display: flex; gap: 10px; align-items: center; }
         .app-body { padding: 24px; }
 
-        .settings-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
+        .auth-card {
+            max-width: 400px;
+            margin: 40px auto;
             background: var(--input-bg);
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 30px;
+            border-radius: 16px;
             border: 1px solid var(--panel-border);
         }
 
-        .setting-item { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; }
-        .setting-item label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-        .setting-item input, .setting-item select {
-            width: 100%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--panel-border);
-            background: var(--panel-bg);
-            color: var(--text-main);
-            font-size: 0.85rem;
-            outline: none;
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input {
+            width: 100%; padding: 10px 14px;
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 8px; color: var(--text-main); outline: none;
         }
-
-        textarea {
-            width: 100%; height: 300px;
-            background: var(--input-bg);
-            color: var(--text-main);
-            border: 1px solid var(--panel-border);
-            border-radius: 14px;
-            padding: 18px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            outline: none;
-            resize: vertical;
-        }
-
-        textarea:focus { border-color: var(--accent); }
-
-        .action-bar {
-            display: flex; flex-wrap: wrap; gap: 12px;
-            justify-content: space-between; align-items: center; margin-top: 16px;
-        }
+        .form-group input:focus { border-color: var(--accent); }
 
         .btn {
             background: var(--accent); color: white; border: none;
             padding: 10px 20px; border-radius: 10px; font-weight: 600;
             font-size: 0.88rem; cursor: pointer; display: inline-flex;
-            align-items: center; gap: 8px; transition: all 0.2s;
+            align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; width: 100%;
         }
 
         .btn:hover { background: var(--accent-hover); }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05); color: var(--text-muted);
-            border: 1px solid var(--panel-border);
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--panel-border); width: auto; }
+        .btn-danger { background: var(--danger); width: auto; }
+
+        .auth-switch { text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
+        .auth-switch a { color: var(--accent); text-decoration: none; cursor: pointer; font-weight: 600; }
+
+        textarea {
+            width: 100%; height: 200px;
+            background: var(--input-bg); color: var(--text-main);
+            border: 1px solid var(--panel-border); border-radius: 14px;
+            padding: 18px; font-family: 'Fira Code', monospace;
+            font-size: 0.95rem; line-height: 1.6; outline: none; resize: vertical;
         }
 
-        .share-box {
-            margin-top: 16px; background: var(--input-bg);
-            border: 1px solid var(--panel-border); border-radius: 12px;
-            padding: 14px; display: none;
-        }
-
-        .share-input-group { display: flex; gap: 10px; margin-top: 8px; }
-        .share-input-group input {
-            flex: 1; background: var(--panel-bg);
-            border: 1px solid var(--panel-border); border-radius: 8px;
-            padding: 10px; color: var(--accent);
-            font-family: 'Fira Code', monospace; font-size: 0.85rem; outline: none;
-        }
-
-        #viewSection, #passwordPromptSection, #expiredSection { display: none; }
-
-        .view-card {
+        .document-list { margin-top: 24px; }
+        .doc-item {
             background: var(--input-bg); border: 1px solid var(--panel-border);
-            border-radius: 14px; padding: 24px; min-height: 220px;
-            font-family: 'Fira Code', monospace; font-size: 0.95rem;
-            line-height: 1.7; white-space: pre-wrap; word-break: break-word;
+            border-radius: 12px; padding: 16px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .doc-info { flex: 1; margin-right: 16px; }
+        .doc-title { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+        .doc-preview { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }
+        .doc-actions { display: flex; gap: 8px; }
 
-        .timer-badge {
-            background: rgba(239, 68, 68, 0.1); color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px;
-            border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-        }
-
-        .status-bar {
-            padding: 10px 24px; background: var(--input-bg);
-            border-top: 1px solid var(--panel-border); display: flex;
-            justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);
-        }
-
-        input[type="file"] { display: none; }
+        #dashboardSection, #authSection { display: none; }
     </style>
 </head>
 <body>
@@ -180,291 +121,243 @@
     <div class="app-header">
         <div class="brand">
             <div class="brand-icon"><i class="fa-solid fa-code"></i></div>
-            <span>Editör Pro</span>
+            <span>Editör Pro Cloud</span>
         </div>
-        <div class="header-actions">
-            <button class="btn btn-secondary" onclick="toggleTheme()">
-                <i class="fa-solid fa-circle-half-stroke"></i> Tema
-            </button>
+        <div id="userHeaderActions" style="display:none; align-items:center; gap:12px;">
+            <span id="userEmailDisplay" style="font-size: 0.85rem; color: var(--text-muted);"></span>
+            <button class="btn btn-secondary" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</button>
         </div>
     </div>
 
     <div class="app-body">
-        <!-- EDITÖR MODU -->
-        <div id="editorSection">
-            <div class="settings-panel">
-                <div class="setting-item">
-                    <label><i class="fa-solid fa-lock"></i> Parola:</label>
-                    <input type="password" id="linkPassword" placeholder="İsteğe bağlı şifre">
+        
+        <!-- GİRİŞ VE KAYIT PANELİ -->
+        <div id="authSection">
+            <div class="auth-card" id="loginForm">
+                <h2 style="margin-bottom: 20px; text-align: center;">Giriş Yap</h2>
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="loginEmail" placeholder="eposta@ornek.com">
                 </div>
-                <div class="setting-item">
-                    <label><i class="fa-solid fa-hourglass-half"></i> Geçerlilik Süresi:</label>
-                    <select id="linkExpiry">
-                        <option value="0">Süresiz</option>
-                        <option value="600">10 Dakika</option>
-                        <option value="3600">1 Saat</option>
-                        <option value="86400">24 Saat</option>
-                        <option value="604800">7 Gün</option>
-                    </select>
+                <div class="form-group">
+                    <label>Parola</label>
+                    <input type="password" id="loginPassword" placeholder="******">
                 </div>
-                <div class="setting-item" style="max-width: 140px;">
-                    <label for="fileInput" class="btn btn-secondary" style="width:100%; justify-content:center; cursor:pointer;">
-                        <i class="fa-solid fa-file-import"></i> Dosya Seç
-                    </label>
-                    <input type="file" id="fileInput" onchange="loadFile(event)">
+                <button class="btn" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</button>
+                <div class="auth-switch">
+                    Hesabın yok mu? <a onclick="toggleAuthForms('register')">Kayıt Ol</a>
                 </div>
             </div>
 
-            <textarea id="editor" placeholder="Metninizi yazın veya dosya yükleyin..." oninput="updateStats()"></textarea>
+            <div class="auth-card" id="registerForm" style="display: none;">
+                <h2 style="margin-bottom: 20px; text-align: center;">Hesap Oluştur</h2>
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="regEmail" placeholder="eposta@ornek.com">
+                </div>
+                <div class="form-group">
+                    <label>Parola</label>
+                    <input type="password" id="regPassword" placeholder="******">
+                </div>
+                <button class="btn" onclick="register()"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</button>
+                <div class="auth-switch">
+                    Zaten hesabın var mı? <a onclick="toggleAuthForms('login')">Giriş Yap</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- METİN DÜZENLEME VE LİSTELEME PANELİ -->
+        <div id="dashboardSection">
+            <h3 id="editorTitle" style="margin-bottom: 12px;">Yeni Metin Oluştur</h3>
+            <input type="hidden" id="currentDocId">
             
-            <div class="action-bar">
-                <button class="btn" onclick="generateShareLink()">
-                    <i class="fa-solid fa-bolt"></i> Özel Bağlantı Oluştur & Kopyala
-                </button>
-                <button class="btn btn-secondary" onclick="clearEditor()">
-                    <i class="fa-solid fa-trash-can"></i> Temizle
-                </button>
-            </div>
-
-            <div class="share-box" id="shareBox">
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Paylaşıma Hazır Bağlantınız:</p>
-                <div class="share-input-group">
-                    <input type="text" id="shareUrl" readonly>
-                    <button class="btn" onclick="copyLink()"><i class="fa-solid fa-copy"></i> Kopyala</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SÜRESİ DOLMUŞ KUTUSU -->
-        <div id="expiredSection" style="text-align:center; padding: 40px 10px;">
-            <i class="fa-solid fa-clock-rotate-left" style="font-size: 3.5rem; color: var(--danger); margin-bottom: 16px;"></i>
-            <h2 style="margin-bottom: 8px;">Bu Bağlantının Süresi Dolmuştur!</h2>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">Belirlenen geçerlilik süresi tamamlandığı için bu içeriğe artık erişilemez.</p>
-            <a href="index.html" class="btn"><i class="fa-solid fa-plus"></i> Yeni Metin Oluştur</a>
-        </div>
-
-        <!-- PAROLA MODAL -->
-        <div id="passwordPromptSection">
-            <div style="text-align: center; padding: 30px 10px;">
-                <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--accent); margin-bottom: 16px;"></i>
-                <h3 style="margin-bottom: 8px;">Bu İçerik Parola İle Korunuyor</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Lütfen parolayı girin.</p>
-                <div style="max-width: 320px; margin: 0 auto; display: flex; gap: 8px;">
-                    <input type="password" id="inputDecryptPassword" placeholder="Parola" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--panel-border); background:var(--input-bg); color:var(--text-main); outline:none;">
-                    <button class="btn" onclick="unlockContent()">Aç</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- OKUMA MODU -->
-        <div id="viewSection">
-            <div style="margin-bottom: 14px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;">
-                <span><i class="fa-solid fa-file-contract"></i> Paylaşılan İçerik</span>
-                <span id="timerDisplay" class="timer-badge" style="display:none;"></span>
+            <div class="form-group">
+                <input type="text" id="docTitleInput" placeholder="Metin Başlığı (Örn: Proje Kodları)" style="font-weight:600;">
             </div>
             
-            <div class="view-card" id="textContent"></div>
-            
-            <div class="action-bar" style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="copyContent()"><i class="fa-solid fa-copy"></i> İçeriği Kopyala</button>
-                <a href="index.html" class="btn" style="text-decoration: none;"><i class="fa-solid fa-plus"></i> Yeni Metin Oluştur</a>
+            <textarea id="docContentInput" placeholder="İçeriğinizi buraya yazın..."></textarea>
+
+            <div style="margin-top: 12px; display: flex; gap: 10px;">
+                <button class="btn" id="saveBtn" onclick="saveDocument()"><i class="fa-solid fa-floppy-disk"></i> Buluta Kaydet</button>
+                <button class="btn btn-secondary" id="cancelEditBtn" onclick="resetEditor()" style="display:none;">İptal</button>
+            </div>
+
+            <hr style="border-color: var(--panel-border); margin: 30px 0;">
+
+            <h3>Kaydedilen Metinleriniz</h3>
+            <div class="document-list" id="documentsContainer">
+                <p style="color: var(--text-muted); text-align:center; padding:20px;">Henüz kaydedilmiş bir metin yok.</p>
             </div>
         </div>
-    </div>
 
-    <div class="status-bar">
-        <div style="display:flex; gap:16px;">
-            <span id="charCount">Karakter: 0</span>
-            <span id="wordCount">Kelime: 0</span>
-            <span id="lineCount">Satır: 0</span>
-        </div>
-        <div>UTF-8</div>
     </div>
 </div>
 
-<script>
-    const editor = document.getElementById('editor');
-    let encryptedDataPayload = null;
-    let countdownInterval = null;
+<!-- FIREBASE SDK (MODULAR) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+        getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+        getDatabase, ref, push, set, onValue, remove, update 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    function updateStats() {
-        const text = editor.value;
-        document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
-        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-        document.getElementById('wordCount').textContent = `Kelime: ${words}`;
-        const lines = text ? text.split('\n').length : 0;
-        document.getElementById('lineCount').textContent = `Satır: ${lines}`;
-    }
+    // PAYLAŞTIĞIN FIREBASE YAPILANDIRMASI
+    const firebaseConfig = {
+        apiKey: "AIzaSyAfOIZT3dkDbWaVqOuwaLWT8JrsVqhWiKw",
+        authDomain: "tv-go-test-c8ae3.firebaseapp.com",
+        databaseURL: "https://tv-go-test-c8ae3-default-rtdb.firebaseio.com",
+        projectId: "tv-go-test-c8ae3",
+        storageBucket: "tv-go-test-c8ae3.firebasestorage.app",
+        messagingSenderId: "913761505448",
+        appId: "1:913761505448:web:b4d8aa53502066ef7cb29d"
+    };
 
-    function toggleTheme() { document.body.classList.toggle('light-mode'); }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-    function loadFile(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (evt) => { editor.value = evt.target.result; updateStats(); };
-            reader.readAsText(file);
-        }
-    }
+    let currentUser = null;
 
-    // Dünya Saat Sunucusundan (WorldTimeAPI) Anlık Güvenilir Zamanı Al
-    async function getRealNetworkTime() {
-        try {
-            const res = await fetch('https://worldtimeapi.org/api/ip');
-            const data = await res.json();
-            return Math.floor(data.unixtime);
-        } catch (e) {
-            // Sunucuya erişilemezse istemci saatini fallback kullan
-            return Math.floor(Date.now() / 1000);
-        }
-    }
-
-    // LINK OLUŞTURMA
-    async function generateShareLink() {
-        const text = editor.value;
-        if (!text.trim()) return alert('Lütfen bir metin yazın veya dosya yükleyin!');
-
-        const password = document.getElementById('linkPassword').value;
-        const durationSeconds = parseInt(document.getElementById('linkExpiry').value);
-        
-        // Şimdiki zamanı saniye cinsinden al
-        const createdAt = Math.floor(Date.now() / 1000);
-
-        let finalContent = text;
-        let isEncrypted = false;
-
-        if (password) {
-            finalContent = CryptoJS.AES.encrypt(text, password).toString();
-            isEncrypted = true;
-        }
-
-        const payload = {
-            c: finalContent,
-            e: isEncrypted ? 1 : 0,
-            t: createdAt,        // Oluşturulma Tarihi (Unix Timestamp)
-            d: durationSeconds   // Geçerlilik Süresi (Saniye)
-        };
-
-        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-        const fullUrl = window.location.origin + window.location.pathname + '#' + encodedData;
-
-        document.getElementById('shareUrl').value = fullUrl;
-        document.getElementById('shareBox').style.display = 'block';
-
-        navigator.clipboard.writeText(fullUrl).then(() => alert('Özel bağlantınız kopyalandı!')).catch(() => {});
-    }
-
-    // SAYFA YÜKLENDİĞİNDE SÜRE KONTROLÜ
-    window.addEventListener('DOMContentLoaded', async () => {
-        const hash = window.location.hash.substring(1);
-        if (hash) {
-            try {
-                const jsonString = decodeURIComponent(escape(atob(hash)));
-                const payload = JSON.parse(jsonString);
-
-                document.getElementById('editorSection').style.display = 'none';
-
-                // Süreli bir link ise İnternet Saat Sunucusundan gerçek zamanı doğrula
-                if (payload.d > 0) {
-                    const currentTime = await getRealNetworkTime();
-                    const expiresAt = payload.t + payload.d;
-                    const remainingSeconds = expiresAt - currentTime;
-
-                    // SÜRE DOLMUŞSA
-                    if (remainingSeconds <= 0) {
-                        document.getElementById('expiredSection').style.display = 'block';
-                        return;
-                    }
-
-                    // CANLI GERİ SAYIM BAŞLAT
-                    startCountdown(expiresAt);
-                }
-
-                // Şifreli Mi Kontrol Et
-                if (payload.e === 1) {
-                    encryptedDataPayload = payload.c;
-                    document.getElementById('passwordPromptSection').style.display = 'block';
-                } else {
-                    showContent(payload.c);
-                }
-
-            } catch (e) {
-                alert('Geçersiz veya bozuk bağlantı!');
-            }
+    // OTURUM DURUMU TAKİBİ
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            document.getElementById('userHeaderActions').style.display = 'flex';
+            document.getElementById('userEmailDisplay').textContent = user.email;
+            loadUserDocuments();
+        } else {
+            currentUser = null;
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('userHeaderActions').style.display = 'none';
         }
     });
 
-    function startCountdown(expiresAt) {
-        const timerBadge = document.getElementById('timerDisplay');
-        timerBadge.style.display = 'inline-block';
+    // KAYIT OL
+    window.register = async () => {
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPassword').value;
+        try {
+            await createUserWithEmailAndPassword(auth, email, pass);
+            alert('Hesap başarıyla oluşturuldu!');
+        } catch (e) { alert('Hata: ' + e.message); }
+    };
 
-        async function updateTimer() {
-            const now = Math.floor(Date.now() / 1000);
-            const diff = expiresAt - now;
+    // GİRİŞ YAP
+    window.login = async () => {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+        } catch (e) { alert('Hatalı giriş: ' + e.message); }
+    };
 
-            if (diff <= 0) {
-                clearInterval(countdownInterval);
-                document.getElementById('viewSection').style.display = 'none';
-                document.getElementById('passwordPromptSection').style.display = 'none';
-                document.getElementById('expiredSection').style.display = 'block';
+    // ÇIKIŞ YAP
+    window.logout = () => signOut(auth);
+
+    // FORM DEĞİŞTİR
+    window.toggleAuthForms = (mode) => {
+        document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
+        document.getElementById('registerForm').style.display = mode === 'register' ? 'block' : 'none';
+    };
+
+    // METİN KAYDET VE GÜNCELLE (REALTIME DATABASE)
+    window.saveDocument = async () => {
+        const title = document.getElementById('docTitleInput').value.trim();
+        const content = document.getElementById('docContentInput').value.trim();
+        const docId = document.getElementById('currentDocId').value;
+
+        if (!title || !content) return alert('Lütfen başlık ve içerik girin!');
+
+        try {
+            if (docId) {
+                // Güncelleme
+                const docRef = ref(db, `users/${currentUser.uid}/documents/${docId}`);
+                await update(docRef, { title, content });
+                alert('Metin güncellendi!');
+            } else {
+                // Yeni Ekleme
+                const userDocsRef = ref(db, `users/${currentUser.uid}/documents`);
+                const newDocRef = push(userDocsRef);
+                await set(newDocRef, {
+                    title: title,
+                    content: content,
+                    createdAt: Date.now()
+                });
+                alert('Metin kaydedildi!');
+            }
+            resetEditor();
+        } catch (e) { alert('Kaydedilemedi: ' + e.message); }
+    };
+
+    // KULLANICI METİNLERİNİ CANLI LİSTELE
+    function loadUserDocuments() {
+        const userDocsRef = ref(db, `users/${currentUser.uid}/documents`);
+        onValue(userDocsRef, (snapshot) => {
+            const container = document.getElementById('documentsContainer');
+            container.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding:20px;">Henüz kaydedilmiş bir metnin yok.</p>';
                 return;
             }
 
-            const m = Math.floor(diff / 60);
-            const s = diff % 60;
-            timerBadge.innerHTML = `<i class="fa-solid fa-stopwatch"></i> Kalan Süre: ${m}d ${s < 10 ? '0' : ''}${s}s`;
+            snapshot.forEach((childSnapshot) => {
+                const id = childSnapshot.key;
+                const data = childSnapshot.val();
+
+                const div = document.createElement('div');
+                div.className = 'doc-item';
+                div.innerHTML = `
+                    <div class="doc-info">
+                        <div class="doc-title">${escapeHtml(data.title)}</div>
+                        <div class="doc-preview">${escapeHtml(data.content)}</div>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="btn btn-secondary" onclick="editDoc('${id}', '${escapeQuotes(data.title)}', '${escapeQuotes(data.content)}')"><i class="fa-solid fa-pen"></i> Düzenle</button>
+                        <button class="btn btn-danger" onclick="deleteDocItem('${id}')"><i class="fa-solid fa-trash"></i> Sil</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
+
+    // DÜZENLEME MODU
+    window.editDoc = (id, title, content) => {
+        document.getElementById('currentDocId').value = id;
+        document.getElementById('docTitleInput').value = title;
+        document.getElementById('docContentInput').value = content;
+        document.getElementById('editorTitle').textContent = 'Metni Düzenle';
+        document.getElementById('saveBtn').innerHTML = '<i class="fa-solid fa-rotate"></i> Değişiklikleri Kaydet';
+        document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // SİLME
+    window.deleteDocItem = async (id) => {
+        if (confirm('Bu metni silmek istediğinize emin misiniz?')) {
+            const docRef = ref(db, `users/${currentUser.uid}/documents/${id}`);
+            await remove(docRef);
         }
+    };
 
-        updateTimer();
-        countdownInterval = setInterval(updateTimer, 1000);
-    }
+    // SIFIRLAMA
+    window.resetEditor = () => {
+        document.getElementById('currentDocId').value = '';
+        document.getElementById('docTitleInput').value = '';
+        document.getElementById('docContentInput').value = '';
+        document.getElementById('editorTitle').textContent = 'Yeni Metin Oluştur';
+        document.getElementById('saveBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Buluta Kaydet';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+    };
 
-    function unlockContent() {
-        const pass = document.getElementById('inputDecryptPassword').value;
-        if (!pass) return alert('Lütfen parolayı girin.');
-
-        try {
-            const bytes = CryptoJS.AES.decrypt(encryptedDataPayload, pass);
-            const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
-
-            if (!decryptedText) return alert('Hatalı parola!');
-
-            document.getElementById('passwordPromptSection').style.display = 'none';
-            showContent(decryptedText);
-        } catch (e) {
-            alert('Hatalı parola!');
-        }
-    }
-
-    function showContent(text) {
-        document.getElementById('viewSection').style.display = 'block';
-        document.getElementById('textContent').textContent = text;
-        document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
-        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-        document.getElementById('wordCount').textContent = `Kelime: ${words}`;
-        const lines = text ? text.split('\n').length : 0;
-        document.getElementById('lineCount').textContent = `Satır: ${lines}`;
-    }
-
-    function copyLink() {
-        const copyText = document.getElementById('shareUrl');
-        copyText.select();
-        navigator.clipboard.writeText(copyText.value);
-        alert('Bağlantı kopyalandı!');
-    }
-
-    function copyContent() {
-        navigator.clipboard.writeText(document.getElementById('textContent').textContent);
-        alert('İçerik kopyalandı!');
-    }
-
-    function clearEditor() {
-        if(confirm('Tüm metni silmek istediğinize emin misiniz?')) {
-            editor.value = '';
-            updateStats();
-            document.getElementById('shareBox').style.display = 'none';
-        }
-    }
+    function escapeHtml(str) { return str.replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function escapeQuotes(str) { return str.replace(/'/g, "\\'").replace(/\n/g, "\\n"); }
 </script>
 
 </body>
