@@ -3,254 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profesyonel Metin & Kod Düzenleyici</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Çok Sayfalı Metin Görünümü</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --panel-bg: #1e293b;
-            --border-color: #334155;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --accent-hover: #0284c7;
-            --muted-color: #94a3b8;
-        }
-
-        .light-mode {
-            --bg-color: #f8fafc;
-            --panel-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --text-color: #0f172a;
-            --accent-color: #0284c7;
-            --accent-hover: #0369a1;
-            --muted-color: #64748b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        header {
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toolbar {
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 10px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.88rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .btn:hover {
-            background-color: var(--border-color);
-            color: var(--accent-color);
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: #fff;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            color: #fff;
-        }
-
-        .editor-container {
-            flex: 1;
-            display: flex;
-            padding: 16px;
-            gap: 16px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100%;
-            min-height: 70vh;
-            background-color: var(--panel-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            font-family: 'Consolas', 'Fira Code', monospace;
-            font-size: 1rem;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-        }
-
-        textarea:focus {
-            border-color: var(--accent-color);
-        }
-
-        footer {
-            background-color: var(--panel-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 8px 24px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--muted-color);
-        }
-
-        .stats {
-            display: flex;
-            gap: 16px;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 10px; overflow-x: auto; }
+        .tab-btn { background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .tab-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
+        .page-content { background: #0f172a; padding: 16px; border-radius: 8px; min-height: 200px; white-space: pre-wrap; font-size: 16px; }
+        textarea { width: 100%; height: 120px; background: #0f172a; color: white; border: 1px solid #334155; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .share-btn { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-code"></i> Metin & Kod Düzenleyici
-        </div>
-        <div>
-            <button class="btn" id="themeBtn" onclick="toggleTheme()">
-                <i class="fa-solid fa-moon"></i> Tema
-            </button>
-        </div>
-    </header>
+<div class="container">
+    <h2>📄 Sayfalı Metin Düzenleyici</h2>
+    <p style="color:#94a3b8; font-size:14px; margin-bottom:12px;">Metin aralarına <b>---</b> koyarak metni farklı sayfalara bölebilirsin.</p>
 
-    <div class="toolbar">
-        <label for="fileInput" class="btn">
-            <i class="fa-solid fa-folder-open"></i> Dosya Aç
-        </label>
-        <input type="file" id="fileInput" onchange="loadFile(event)">
+    <textarea id="editor" placeholder="1. Sayfa Metni&#10;---&#10;2. Sayfa Metni&#10;---&#10;3. Sayfa Metni" oninput="renderPages()"></textarea>
 
-        <button class="btn" onclick="saveFile()">
-            <i class="fa-solid fa-download"></i> İndir
-        </button>
+    <div class="tabs" id="tabContainer"></div>
+    <div class="page-content" id="pageDisplay">Metin yazıldığında ayrı sayfalar burada görünecek...</div>
 
-        <button class="btn" onclick="copyText()">
-            <i class="fa-solid fa-copy"></i> Kopyala
-        </button>
+    <br>
+    <button class="share-btn" onclick="copyShareLink()">📋 Herkesle Paylaşılabilir Linki Kopyala</button>
+</div>
 
-        <button class="btn" onclick="clearText()">
-            <i class="fa-solid fa-trash"></i> Temizle
-        </button>
+<script>
+    function renderPages() {
+        const text = document.getElementById('editor').value;
+        const pages = text.split('---');
+        const tabContainer = document.getElementById('tabContainer');
+        const pageDisplay = document.getElementById('pageDisplay');
 
-        <button class="btn btn-primary" onclick="shareLink()">
-            <i class="fa-solid fa-share-nodes"></i> Bağlantıyı Paylaş
-        </button>
-    </div>
+        tabContainer.innerHTML = '';
 
-    <div class="editor-container">
-        <textarea id="editor" placeholder="Metninizi veya kodlarınızı buraya yazın..." oninput="updateStats()"></textarea>
-    </div>
-
-    <footer>
-        <div class="stats">
-            <span id="charCount">Karakter: 0</span>
-            <span id="wordCount">Kelime: 0</span>
-            <span id="lineCount">Satır: 0</span>
-        </div>
-        <div>Durum: Hazır</div>
-    </footer>
-
-    <script>
-        const editor = document.getElementById('editor');
-
-        function updateStats() {
-            const text = editor.value;
-            document.getElementById('charCount').textContent = `Karakter: ${text.length}`;
-            
-            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-            document.getElementById('wordCount').textContent = `Kelime: ${words}`;
-
-            const lines = text ? text.split('\n').length : 0;
-            document.getElementById('lineCount').textContent = `Satır: ${lines}`;
+        if (!text.trim()) {
+            pageDisplay.textContent = 'Metin girilmedi...';
+            return;
         }
 
-        function clearText() {
-            if (confirm('Tüm metni silmek istediğinizden emin misiniz?')) {
-                editor.value = '';
-                updateStats();
-            }
-        }
+        pages.forEach((pageText, index) => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+            btn.textContent = `Sayfa ${index + 1}`;
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                pageDisplay.textContent = pageText.trim();
+            };
+            tabContainer.appendChild(btn);
+        });
 
-        function copyText() {
-            navigator.clipboard.writeText(editor.value);
-            alert('Metin panoya kopyalandı!');
-        }
+        pageDisplay.textContent = pages[0].trim();
+    }
 
-        function saveFile() {
-            const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'metin.txt';
-            link.click();
-        }
+    function copyShareLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Bağlantı kopyalandı! Bu linki herkese gönderebilirsin.');
+    }
+</script>
 
-        function loadFile(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    editor.value = e.target.result;
-                    updateStats();
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-        }
-
-        function shareLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Site bağlantısı kopyalandı: ' + window.location.href);
-        }
-    </script>
 </body>
 </html>
