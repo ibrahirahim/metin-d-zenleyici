@@ -2,62 +2,61 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metinlerim - Editör Pro Cloud</title>
+    <title>Editör Pro - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0b0f19; --panel: #111827; --border: #1f2937; --accent: #6366f1; --danger: #ef4444; --text: #f9fafb; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        :root { --bg: #0b0f19; --sidebar: #111827; --accent: #6366f1; --text: #f9fafb; --border: #1f2937; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; }
         
-        /* Editör & Liste Kontrolü */
-        #editorView { display: none; }
+        /* Auth Screen */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        .auth-card { width: 350px; padding: 30px; background: var(--sidebar); border-radius: 16px; }
         
-        .doc-item { display: flex; justify-content: space-between; align-items: center; background: #080c14; padding: 16px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .btn { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        /* Sidebar */
+        #sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .doc-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid var(--border); transition: 0.2s; }
+        .doc-item:hover { background: var(--border); }
+        
+        /* Main Editor */
+        #main-area { flex: 1; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
+        input, textarea { width: 100%; padding: 12px; background: #080c14; border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 15px; outline: none; }
+        textarea { height: 400px; resize: none; }
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--accent); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-sec { background: var(--border); color: white; }
-        
-        input, textarea { width: 100%; padding: 12px; background: #080c14; border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 10px; outline: none; }
+        .btn-danger { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="authSection">
-        <div class="card" id="loginForm">
-            <h2>Giriş Yap</h2>
-            <input type="email" id="loginEmail" placeholder="E-posta">
-            <input type="password" id="loginPassword" placeholder="Şifre">
-            <button class="btn btn-primary" onclick="login()">Giriş Yap</button>
-        </div>
+<!-- GİRİŞ EKRANI -->
+<div id="auth-screen">
+    <div class="auth-card">
+        <h2 style="margin-bottom:20px;">Giriş Yap</h2>
+        <input type="email" id="email" placeholder="E-posta">
+        <input type="password" id="pass" placeholder="Şifre">
+        <button class="btn btn-primary" style="width:100%" onclick="login()">Giriş Yap</button>
     </div>
+</div>
 
-    <div id="appSection" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h1>Metinlerim</h1>
-            <button class="btn btn-primary" onclick="showEditor()"><i class="fa-solid fa-plus"></i> Yeni Metin</button>
-        </div>
+<!-- UYGULAMA EKRANI -->
+<div id="sidebar">
+    <div class="sidebar-header">Metinlerim <button class="btn" onclick="newDoc()">+</button></div>
+    <div id="doc-list"></div>
+</div>
 
-        <!-- Klasör Görünümü -->
-        <div id="documentsView">
-            <div id="documentsContainer"></div>
-        </div>
-
-        <!-- Editör Görünümü -->
-        <div id="editorView" class="card">
-            <h2 id="editorTitle">Yeni Metin</h2>
-            <input type="hidden" id="currentDocId">
-            <input type="text" id="docTitle" placeholder="Başlık...">
-            <textarea id="docContent" rows="10" placeholder="İçerik..."></textarea>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" onclick="saveDocument()">Kaydet</button>
-                <button class="btn btn-sec" onclick="hideEditor()">İptal</button>
-            </div>
-        </div>
+<div id="main-area">
+    <input type="hidden" id="activeId">
+    <input type="text" id="title" placeholder="Başlık...">
+    <textarea id="content" placeholder="Metin içeriği..."></textarea>
+    
+    <div class="toolbar">
+        <button class="btn btn-primary" onclick="saveDoc()"><i class="fa-solid fa-save"></i> Kaydet</button>
+        <button class="btn btn-danger" onclick="deleteDoc()"><i class="fa-solid fa-trash"></i> Sil</button>
+        <div style="flex:1"></div>
+        <button class="btn" onclick="openShareModal()">Paylaşım Linki Oluştur</button>
     </div>
 </div>
 
@@ -84,66 +83,70 @@
     onAuthStateChanged(auth, (user) => {
         if (user) {
             uid = user.uid;
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('appSection').style.display = 'block';
-            loadDocs();
+            document.getElementById('auth-screen').style.display = 'none';
+            loadList();
         }
     });
 
-    window.login = () => {
-        const e = document.getElementById('loginEmail').value;
-        const p = document.getElementById('loginPassword').value;
-        signInWithEmailAndPassword(auth, e, p).catch(err => alert(err.message));
+    window.login = () => signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
+
+    // DOKÜMAN YÖNETİMİ
+    window.newDoc = () => {
+        document.getElementById('activeId').value = "";
+        document.getElementById('title').value = "";
+        document.getElementById('content').value = "";
     };
 
-    window.showEditor = (id, title, content) => {
-        document.getElementById('currentDocId').value = id || '';
-        document.getElementById('docTitle').value = title || '';
-        document.getElementById('docContent').value = content || '';
-        document.getElementById('editorTitle').innerText = id ? 'Düzenle' : 'Yeni Metin';
-        document.getElementById('documentsView').style.display = 'none';
-        document.getElementById('editorView').style.display = 'block';
-    };
-
-    window.hideEditor = () => {
-        document.getElementById('documentsView').style.display = 'block';
-        document.getElementById('editorView').style.display = 'none';
-    };
-
-    window.saveDocument = async () => {
-        const id = document.getElementById('currentDocId').value;
-        const title = document.getElementById('docTitle').value;
-        const content = document.getElementById('docContent').value;
-        
-        if (id) {
-            await update(ref(db, `users/${uid}/docs/${id}`), { title, content });
-        } else {
-            await push(ref(db, `users/${uid}/docs`), { title, content });
+    window.saveDoc = async () => {
+        const id = document.getElementById('activeId').value;
+        const data = { title: document.getElementById('title').value, content: document.getElementById('content').value };
+        if(id) await update(ref(db, `users/${uid}/docs/${id}`), data);
+        else {
+            const newRef = push(ref(db, `users/${uid}/docs`));
+            await set(newRef, data);
+            document.getElementById('activeId').value = newRef.key;
         }
-        hideEditor();
+        alert('Kaydedildi');
     };
 
-    window.deleteDoc = (id) => {
-        if(confirm('Silinsin mi?')) remove(ref(db, `users/${uid}/docs/${id}`));
+    window.deleteDoc = async () => {
+        const id = document.getElementById('activeId').value;
+        if(id && confirm('Silinsin mi?')) {
+            await remove(ref(db, `users/${uid}/docs/${id}`));
+            newDoc();
+        }
     };
 
-    function loadDocs() {
+    window.loadList = () => {
         onValue(ref(db, `users/${uid}/docs`), (snap) => {
-            const container = document.getElementById('documentsContainer');
-            container.innerHTML = '';
+            const list = document.getElementById('doc-list');
+            list.innerHTML = "";
             snap.forEach(child => {
                 const d = child.val();
-                container.innerHTML += `
-                    <div class="doc-item">
-                        <div><strong>${d.title}</strong></div>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn btn-sec" onclick="showEditor('${child.key}', '${d.title.replace(/'/g, "\\'")}', '${d.content.replace(/'/g, "\\'")}')">Düzenle</button>
-                            <button class="btn btn-danger" onclick="deleteDoc('${child.key}')">Sil</button>
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="doc-item" onclick="editDoc('${child.key}', '${d.title.replace(/'/g, "\\'")}', '${d.content.replace(/'/g, "\\'")}')">
+                    ${d.title}</div>`;
             });
         });
-    }
+    };
+
+    window.editDoc = (id, title, content) => {
+        document.getElementById('activeId').value = id;
+        document.getElementById('title').value = title;
+        document.getElementById('content').value = content;
+    };
+
+    // PAYLAŞIM (SÜRE VE ŞİFRE EKLEME)
+    window.openShareModal = () => {
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const pass = prompt("Paylaşım için şifre belirleyin:");
+        const expiry = prompt("Süre (saniye cinsinden, örn: 3600):");
+        
+        const payload = { c: content, p: pass, t: Date.now(), d: parseInt(expiry) };
+        const encoded = btoa(JSON.stringify(payload));
+        const url = window.location.origin + "/view.html#" + encoded;
+        prompt("Paylaşım linkiniz (Bunu kopyalayın):", url);
+    };
 </script>
 
 </body>
