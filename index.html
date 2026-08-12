@@ -3,66 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çok Sayfalı Metin Görünümü</title>
+    <title>Metin Paylaşım Sistemi</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #0f172a; color: #f8fafc; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 10px; overflow-x: auto; }
-        .tab-btn { background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-        .tab-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
-        .page-content { background: #0f172a; padding: 16px; border-radius: 8px; min-height: 200px; white-space: pre-wrap; font-size: 16px; }
-        textarea { width: 100%; height: 120px; background: #0f172a; color: white; border: 1px solid #334155; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .share-btn { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 800px; width: 100%; background: #1e293b; padding: 24px; border-radius: 16px; border: 1px solid #334155; }
+        h2 { color: #38bdf8; margin-bottom: 12px; }
+        textarea { width: 100%; height: 250px; background: #0f172a; color: #fff; border: 1px solid #334155; padding: 14px; border-radius: 10px; font-size: 16px; margin-bottom: 14px; outline: none; }
+        .btn { background: #0284c7; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; margin-right: 8px; }
+        .btn:hover { background: #0369a1; }
+        .view-mode { display: none; background: #0f172a; padding: 20px; border-radius: 10px; border: 1px solid #334155; font-size: 16px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+        .share-box { margin-top: 16px; display: none; background: #334155; padding: 12px; border-radius: 8px; }
+        .share-box input { width: 80%; padding: 8px; border-radius: 6px; border: none; outline: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📄 Sayfalı Metin Düzenleyici</h2>
-    <p style="color:#94a3b8; font-size:14px; margin-bottom:12px;">Metin aralarına <b>---</b> koyarak metni farklı sayfalara bölebilirsin.</p>
+    <!-- EDITÖR MODU (Yazı Yazma Sayfası) -->
+    <div id="editorSection">
+        <h2>✍️ Metin Düzenleyici</h2>
+        <textarea id="editor" placeholder="Metninizi buraya yazın..."></textarea>
+        <button class="btn" onclick="generateShareLink()">⚡ Paylaşım Linki Oluştur</button>
+        
+        <div class="share-box" id="shareBox">
+            <p style="margin-bottom:6px; font-size:14px; color:#cbd5e1;">Özel Linkiniz Hazır:</p>
+            <input type="text" id="shareUrl" readonly>
+            <button class="btn" onclick="copyLink()">Kopyala</button>
+        </div>
+    </div>
 
-    <textarea id="editor" placeholder="1. Sayfa Metni&#10;---&#10;2. Sayfa Metni&#10;---&#10;3. Sayfa Metni" oninput="renderPages()"></textarea>
-
-    <div class="tabs" id="tabContainer"></div>
-    <div class="page-content" id="pageDisplay">Metin yazıldığında ayrı sayfalar burada görünecek...</div>
-
-    <br>
-    <button class="share-btn" onclick="copyShareLink()">📋 Herkesle Paylaşılabilir Linki Kopyala</button>
+    <!-- Sadece GÖRÜNTÜLEME MODU (Linke Tıklayanın Göreceği Sayfa) -->
+    <div id="viewSection" class="view-mode">
+        <h2 style="margin-bottom:16px;">📄 Paylaşılan Metin</h2>
+        <div id="textContent"></div>
+        <br><br>
+        <a href="index.html" class="btn" style="text-decoration:none; display:inline-block;">Yeni Metin Oluştur</a>
+    </div>
 </div>
 
 <script>
-    function renderPages() {
-        const text = document.getElementById('editor').value;
-        const pages = text.split('---');
-        const tabContainer = document.getElementById('tabContainer');
-        const pageDisplay = document.getElementById('pageDisplay');
-
-        tabContainer.innerHTML = '';
-
-        if (!text.trim()) {
-            pageDisplay.textContent = 'Metin girilmedi...';
-            return;
+    // Sayfa açıldığında linkte metin var mı kontrol et
+    window.onload = function() {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            try {
+                // Linkteki kodlanmış metni çöz ve göster
+                const decodedText = decodeURIComponent(escape(atob(hash)));
+                document.getElementById('editorSection').style.display = 'none';
+                document.getElementById('viewSection').style.display = 'block';
+                document.getElementById('textContent').textContent = decodedText;
+            } catch (e) {
+                alert('Geçersiz veya bozuk link!');
+            }
         }
+    };
 
-        pages.forEach((pageText, index) => {
-            const btn = document.createElement('button');
-            btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
-            btn.textContent = `Sayfa ${index + 1}`;
-            btn.onclick = () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                pageDisplay.textContent = pageText.trim();
-            };
-            tabContainer.appendChild(btn);
-        });
+    // Metni Linke Dönüştürme Fonksiyonu
+    function generateShareLink() {
+        const text = document.getElementById('editor').value;
+        if (!text.trim()) return alert('Lütfen önce bir metin yazın!');
 
-        pageDisplay.textContent = pages[0].trim();
+        // Metni Base64 ile güvenli bir şekilde şifrele/kodla
+        const encodedText = btoa(unescape(encodeURIComponent(text)));
+        const fullUrl = window.location.origin + window.location.pathname + '#' + encodedText;
+
+        document.getElementById('shareUrl').value = fullUrl;
+        document.getElementById('shareBox').style.display = 'block';
+        
+        navigator.clipboard.writeText(fullUrl);
+        alert('Özel linkiniz oluşturuldu ve panoya kopyalandı!');
     }
 
-    function copyShareLink() {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Bağlantı kopyalandı! Bu linki herkese gönderebilirsin.');
+    function copyLink() {
+        const copyText = document.getElementById('shareUrl');
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        alert('Link kopyalandı!');
     }
 </script>
 
